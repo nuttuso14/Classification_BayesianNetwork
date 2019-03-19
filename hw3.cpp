@@ -115,7 +115,38 @@ vector<int> getListofKeyname(map<int,string> mp){
     return key;
 }
 
-int computeOutputClass(vector<map<int,string>> train, map<int,string> test){
+double* getAllClassPop(vector<map<int,string>> train){
+    int N_classOut[4]={0};
+
+    for(map<int,string> t:train)
+    {
+         for(int i=0;i<sizeOfMap;i++)
+         {
+            if(t[2]==outputClass[i]){
+                N_classOut[i]++;
+            }
+         }
+    }
+    /*for(int i=0;i<sizeOfMap;i++)
+    {
+       cout << outputClass[i]<<":"<<N_classOut[i]<<endl;
+    }*/
+
+    //cout << "N: "<< train.size()<<endl;
+
+    double* popClass; 
+    popClass = new double [4];
+    //double popClass[4] = {0};
+    for(int i=0;i<sizeOfMap;i++)
+    {
+        popClass[i]= (double)N_classOut[i]/(double)train.size();
+        //cout << outputClass[i]<<":"<<popClass[i]<<endl;
+    }
+
+    return popClass;
+}
+
+int computeOutputClass(vector<map<int,string>> train, map<int,string> test,double* pp){
  
     vector<int> key = getListofKeyname(test);
     double popcase[sizeOfMap];
@@ -176,7 +207,8 @@ int computeOutputClass(vector<map<int,string>> train, map<int,string> test){
                     }
                     break;
                 }
-                default:{ // cal by continuous values
+                default:
+                { // cal by continuous values
                      
                      for(int i=0;i<sizeOfMap;i++)
                      {
@@ -205,11 +237,12 @@ int computeOutputClass(vector<map<int,string>> train, map<int,string> test){
             }
         }
     }
-    /*int x=0;
-    for(double p:popcase){
-        cout << x << ":" << p <<endl;
-        x++;
-    }*/
+
+    for(int i=0;i<sizeOfMap;i++)
+    {
+        popcase[i]*=pp[i];
+        //cout << "pp2:"<<pp[i]<<endl;
+    }
 
     return FindMaxIndex(popcase,sizeOfMap);
 }
@@ -332,7 +365,12 @@ int main(int argc, char *argv[]) {
     ofstream outfile;
     outfile.open("output.txt"); // overwrite
 
-    
+    double* pp = getAllClassPop(vms);
+
+    /*for(int i=0;i<sizeOfMap;i++)
+    {
+        cout << "pp:"<<pp[i]<<endl;
+    }*/
 
     string content;
     vector<map<int,string>> tests = mapTransaction("test.txt",-1);
@@ -356,7 +394,7 @@ int main(int argc, char *argv[]) {
         }*/
         //cout << "}->";
         content+="}->";
-        int chosenIndex = computeOutputClass(vms,test);
+        int chosenIndex = computeOutputClass(vms,test,pp);
         //cout << outputClass[chosenIndex]<<endl;
         content+=outputClass[chosenIndex]+"\n";
     }
