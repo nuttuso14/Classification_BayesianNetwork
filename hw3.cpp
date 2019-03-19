@@ -363,7 +363,7 @@ int main(int argc, char *argv[]) {
 
     outfile << content; 
     outfile.close();
-    cout << "Classification Complete, please see output.txt";
+    cout << "Classification Complete, please see output.txt"<<endl;
   
     return 0;
 }
