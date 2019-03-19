@@ -49,4 +49,4 @@ Type the following commands for both cases.
   $ hw3.exe 
   ```
 ## Output
-  See the classification output at output.txt after the execution. 
+  See the classification output at `output.txt` after the execution. 
